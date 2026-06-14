@@ -11,8 +11,6 @@ A full-stack digital pet ecosystem that grows based on your real coding habits.
 ```
 devpet/
 ├── architecture.md              # System architecture & data flow
-├── build.md                     # Complete build prompt for LLMs
-├── 30-day-tracker.md            # Implementation checklist
 │
 ├── deploy-cli/                  # One-command deployment orchestrator
 │   ├── src/index.ts             # CLI: backend + web + vscode + mobile + landing
@@ -83,7 +81,6 @@ devpet/
 │
 └── landing-page/
     ├── index.html               # Marketing landing page (single file)
-    └── DEPLOY.md                # Cloudflare Pages deploy guide
 ```
 
 ---
