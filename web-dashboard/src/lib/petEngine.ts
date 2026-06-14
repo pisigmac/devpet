@@ -49,19 +49,19 @@ export function getMood(profile: Profile) {
 
 export function getLanguageColor(lang: string): string {
   const colors: Record<string, string> = {
-    javascript: '#f7df1e',
-    typescript: '#3178c6',
-    python: '#3776ab',
-    rust: '#dea584',
-    go: '#00add8',
-    java: '#b07219',
-    'c++': '#f34b7d',
-    html: '#e34c26',
-    css: '#563d7c',
-    php: '#4F5D95',
-    ruby: '#701516',
-    swift: '#ffac45',
-    kotlin: '#A97BFF',
+    javascript: '#D4A056',
+    typescript: '#C86B53',
+    python: '#7A8B6E',
+    rust: '#B87333',
+    go: '#5D8A8A',
+    java: '#A06835',
+    'c++': '#B56A6A',
+    html: '#D97757',
+    css: '#8A7A66',
+    php: '#8B7A9E',
+    ruby: '#A05050',
+    swift: '#D98A4E',
+    kotlin: '#9A6B8A',
   }
-  return colors[lang?.toLowerCase()] || '#7c3aed'
+  return colors[lang?.toLowerCase()] || '#9A8B80'
 }

@@ -9,12 +9,12 @@ export const STAGES = [
 ];
 
 export const MOODS = {
-  happy: { label: 'Happy', color: '#22c55e', icon: '😊' },
-  focused: { label: 'Focused', color: '#3b82f6', icon: '🤓' },
-  tired: { label: 'Tired', color: '#f59e0b', icon: '😴' },
-  neglected: { label: 'Neglected', color: '#ef4444', icon: '😢' },
-  excited: { label: 'Excited', color: '#ec4899', icon: '🤩' },
-  neutral: { label: 'Neutral', color: '#94a3b8', icon: '😐' },
+  happy: { label: 'Happy', color: '#6B8E5A', icon: '😊' },
+  focused: { label: 'Focused', color: '#8A7A66', icon: '🤓' },
+  tired: { label: 'Tired', color: '#C99A4D', icon: '😴' },
+  neglected: { label: 'Neglected', color: '#B54B3F', icon: '😢' },
+  excited: { label: 'Excited', color: '#C86B53', icon: '🤩' },
+  neutral: { label: 'Neutral', color: '#9A8B80', icon: '😐' },
 };
 
 export interface Profile {
@@ -65,17 +65,20 @@ export function getMood(profile: Profile) {
 
 export function getLanguageColor(lang: string): string {
   const colors: Record<string, string> = {
-    javascript: '#f7df1e',
-    typescript: '#3178c6',
-    python: '#3776ab',
-    rust: '#dea584',
-    go: '#00add8',
-    java: '#b07219',
-    html: '#e34c26',
-    css: '#563d7c',
-    php: '#4F5D95',
+    javascript: '#D4A056',
+    typescript: '#C86B53',
+    python: '#7A8B6E',
+    rust: '#B87333',
+    go: '#5D8A8A',
+    java: '#A06835',
+    html: '#D97757',
+    css: '#8A7A66',
+    php: '#8B7A9E',
+    ruby: '#A05050',
+    swift: '#D98A4E',
+    kotlin: '#9A6B8A',
   };
-  return colors[lang?.toLowerCase()] || '#7c3aed';
+  return colors[lang?.toLowerCase()] || '#9A8B80';
 }
 
 export const SKIN_EFFECTS: Record<string, any> = {

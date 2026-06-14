@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Users, Copy, Check, Trophy, GitCompare } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Users, Copy, Check, Trophy, GitCompare, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { getStage, MOODS, getMood } from '../lib/petEngine'
 
@@ -18,7 +18,6 @@ export default function SocialHub({ user }: { user: any }) {
   }, [user])
 
   const fetchData = async () => {
-    // Get friends
     const { data: friendData } = await supabase
       .from('pet_friends')
       .select('*, requester:profiles!requester_id(*), addressee:profiles!addressee_id(*)')
@@ -27,7 +26,6 @@ export default function SocialHub({ user }: { user: any }) {
 
     setFriends(friendData || [])
 
-    // Get leaderboard
     const { data: lbData } = await supabase
       .from('profiles')
       .select('id, username, pet_name, pet_stage, pet_xp, current_streak')
@@ -59,138 +57,152 @@ export default function SocialHub({ user }: { user: any }) {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-        {/* Friends */}
-        <div className="glass">
-          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Users size={20} /> Friends
-          </h3>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      {/* Friends */}
+      <div className="glass">
+        <h3 className="section-title">
+          <Users size={20} /> Friends
+        </h3>
 
-          <div style={{ marginBottom: '16px' }}>
-            <button className="btn" onClick={generateCode} style={{ marginBottom: '8px', width: '100%' }}>
-              Generate Friend Code
-            </button>
-            {myCode && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px', background: 'rgba(124,58,237,0.1)', borderRadius: '8px' }}>
-                <code style={{ flex: 1, fontSize: '16px', letterSpacing: '2px' }}>{myCode}</code>
-                <button onClick={copyCode} style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer' }}>
-                  {copied ? <Check size={18} /> : <Copy size={18} />}
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-            <input
-              placeholder="Enter friend code"
-              value={friendCode}
-              onChange={(e) => setFriendCode(e.target.value)}
-              style={{ flex: 1 }}
-            />
-            <button className="btn" onClick={acceptFriend} disabled={!friendCode}>
-              Add
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {friends.length === 0 && <p style={{ color: 'var(--text-secondary)' }}>No friends yet. Share your code!</p>}
-            {friends.map((f) => {
-              const friendProfile = f.requester_id === user.id ? f.addressee : f.requester
-              if (!friendProfile) return null
-              const stage = getStage(friendProfile.pet_xp)
-              const mood = getMood(friendProfile)
-              const moodData = MOODS[mood as keyof typeof MOODS] || MOODS.neutral
-
-              return (
-                <motion.div
-                  key={f.id}
-                  whileHover={{ scale: 1.02 }}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', cursor: 'pointer' }}
-                  onClick={() => setCompareFriend(friendProfile)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '32px' }}>{stage.emoji}</span>
-                    <div>
-                      <div style={{ fontWeight: 500 }}>{friendProfile.pet_name}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                        {stage.name} • {friendProfile.pet_xp.toLocaleString()} XP
-                      </div>
-                    </div>
-                  </div>
-                  <span className={moodData.color}>{moodData.icon}</span>
-                </motion.div>
-              )
-            })}
-          </div>
+        <div style={{ marginBottom: '20px' }}>
+          <button className="btn" onClick={generateCode} style={{ marginBottom: '10px', width: '100%' }}>
+            <Sparkles size={16} /> Generate Friend Code
+          </button>
+          {myCode && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px', background: 'var(--accent-soft)', borderRadius: 'var(--radius)', border: '1px solid var(--accent-glow)' }}>
+              <code style={{ flex: 1, fontSize: '18px', letterSpacing: '3px', fontWeight: 600, color: 'var(--accent)' }}>{myCode}</code>
+              <button onClick={copyCode} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px', color: 'var(--accent)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {copied ? <Check size={18} /> : <Copy size={18} />}
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Leaderboard */}
-        <div className="glass">
-          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Trophy size={20} /> Global Leaderboard
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {leaderboard.map((p, i) => {
-              const stage = getStage(p.pet_xp)
-              const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : ''
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+          <input
+            placeholder="Enter friend code"
+            value={friendCode}
+            onChange={(e) => setFriendCode(e.target.value)}
+            style={{ flex: 1 }}
+          />
+          <button className="btn" onClick={acceptFriend} disabled={!friendCode}>
+            Add
+          </button>
+        </div>
 
-              return (
-                <div key={p.id} className="leaderboard-row" style={{ opacity: p.id === user.id ? 1 : 0.8 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span className={`leaderboard-rank ${rankClass}`}>{i + 1}</span>
-                    <span style={{ fontSize: '24px' }}>{stage.emoji}</span>
-                    <div>
-                      <div style={{ fontWeight: 500 }}>{p.pet_name}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{p.username}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {friends.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '32px 20px', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '36px', marginBottom: '10px' }}>🤝</div>
+              <p>No friends yet. Share your code!</p>
+            </div>
+          )}
+          {friends.map((f) => {
+            const friendProfile = f.requester_id === user.id ? f.addressee : f.requester
+            if (!friendProfile) return null
+            const stage = getStage(friendProfile.pet_xp)
+            const mood = getMood(friendProfile)
+            const moodData = MOODS[mood as keyof typeof MOODS] || MOODS.neutral
+
+            return (
+              <motion.div
+                key={f.id}
+                whileHover={{ scale: 1.01 }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--bg-soft)', borderRadius: 'var(--radius)', border: '1px solid var(--border)', cursor: 'pointer' }}
+                onClick={() => setCompareFriend(friendProfile)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <span style={{ fontSize: '36px' }}>{stage.emoji}</span>
+                  <div>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{friendProfile.pet_name}</div>
+                    <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
+                      {stage.name} • {friendProfile.pet_xp.toLocaleString()} XP
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontWeight: 'bold' }}>{p.pet_xp.toLocaleString()} XP</div>
-                    <div style={{ fontSize: '12px', color: 'var(--flame)' }}>{p.current_streak} 🔥</div>
+                </div>
+                <span className={moodData.color} style={{ fontSize: '22px' }}>{moodData.icon}</span>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Leaderboard */}
+      <div className="glass">
+        <h3 className="section-title">
+          <Trophy size={20} /> Global Leaderboard
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {leaderboard.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '32px 20px', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '36px', marginBottom: '10px' }}>🏆</div>
+              <p>No leaderboard data yet.</p>
+            </div>
+          )}
+          {leaderboard.map((p, i) => {
+            const stage = getStage(p.pet_xp)
+            const isTop3 = i < 3
+
+            return (
+              <div key={p.id} className="leaderboard-row" style={{ opacity: p.id === user.id ? 1 : 0.85 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <span className={`leaderboard-rank ${isTop3 ? `rank-${i + 1}` : ''}`}>{i + 1}</span>
+                  <span style={{ fontSize: '32px' }}>{stage.emoji}</span>
+                  <div>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{p.pet_name}</div>
+                    <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>{p.username}</div>
                   </div>
                 </div>
-              )
-            })}
-          </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.pet_xp.toLocaleString()} XP</div>
+                  <div style={{ fontSize: '13px', color: 'var(--flame)', fontWeight: 500 }}>{p.current_streak} 🔥</div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
 
       {/* Compare Modal */}
-      {compareFriend && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}
-          onClick={() => setCompareFriend(null)}
-        >
+      <AnimatePresence>
+        {compareFriend && (
           <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            className="glass"
-            style={{ maxWidth: '500px', width: '90%' }}
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(44, 36, 32, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '24px' }}
+            onClick={() => setCompareFriend(null)}
           >
-            <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <GitCompare size={20} /> Pet Comparison
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', textAlign: 'center' }}>
-              <div>
-                <div style={{ fontSize: '48px' }}>{getStage(compareFriend.pet_xp).emoji}</div>
-                <div style={{ fontWeight: 'bold' }}>{compareFriend.pet_name}</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{compareFriend.username}</div>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass"
+              style={{ maxWidth: '480px', width: '100%' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px' }}>
+                <GitCompare size={20} /> Pet Comparison
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', textAlign: 'center' }}>
+                <div style={{ padding: '20px', background: 'var(--bg-soft)', borderRadius: 'var(--radius-lg)' }}>
+                  <div style={{ fontSize: '56px' }}>{getStage(compareFriend.pet_xp).emoji}</div>
+                  <div style={{ fontWeight: 700, marginTop: '8px' }}>{compareFriend.pet_name}</div>
+                  <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>{compareFriend.username}</div>
+                </div>
+                <div style={{ padding: '20px', background: 'var(--bg-soft)', borderRadius: 'var(--radius-lg)' }}>
+                  <div style={{ fontSize: '56px' }}>🥚</div>
+                  <div style={{ fontWeight: 700, marginTop: '8px' }}>You</div>
+                  <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>{user.email?.split('@')[0] || 'demo'}</div>
+                </div>
               </div>
-              <div>
-                <div style={{ fontSize: '48px' }}>🥚</div>
-                <div style={{ fontWeight: 'bold' }}>You</div>
-              </div>
-            </div>
-            <button className="btn" onClick={() => setCompareFriend(null)} style={{ width: '100%', marginTop: '16px' }}>
-              Close
-            </button>
+              <button className="btn" onClick={() => setCompareFriend(null)} style={{ width: '100%', marginTop: '24px' }}>
+                Close
+              </button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }

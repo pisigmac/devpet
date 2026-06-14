@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase, Profile } from '../lib/supabase'
-import { Moon, Sun, Save, Github, ExternalLink } from 'lucide-react'
+import { Moon, Sun, Save, Github, ExternalLink, User, Palette } from 'lucide-react'
 import { getGitHubProfile } from '../lib/github'
 
 interface GitHubProfile {
@@ -46,14 +46,25 @@ export default function Settings({ profile, user }: { profile: Profile | null; u
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '680px', margin: '0 auto' }}>
-      <div className="glass" style={{ marginBottom: '24px' }}>
-        <h2 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '28px' }}>⚙️</span> Settings
-        </h2>
+    <div style={{ maxWidth: '680px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Profile Summary */}
+      <div className="glass" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', border: '2px solid var(--accent-glow)' }}>
+          {profile?.pet_name?.[0] || '🐛'}
+        </div>
+        <div>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '4px' }}>{profile?.pet_name || 'DevPet'}</h2>
+          <p style={{ color: 'var(--text-tertiary)', fontSize: '14px' }}>{profile?.username || user?.email?.split('@')[0] || 'demo'}</p>
+        </div>
+      </div>
+
+      <div className="glass">
+        <h3 className="section-title">
+          <User size={20} /> Pet Settings
+        </h3>
 
         <div style={{ marginBottom: '24px' }}>
-          <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: 500 }}>
             Pet Name
           </label>
           <input
@@ -64,7 +75,8 @@ export default function Settings({ profile, user }: { profile: Profile | null; u
         </div>
 
         <div style={{ marginBottom: '24px' }}>
-          <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>
+          <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            <Palette size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '6px' }} />
             Theme
           </label>
           <div style={{ display: 'flex', gap: '12px' }}>
@@ -91,29 +103,29 @@ export default function Settings({ profile, user }: { profile: Profile | null; u
       </div>
 
       <div className="glass">
-        <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <h3 className="section-title">
           <Github size={20} /> Connected Accounts
         </h3>
 
         {loadingGh ? (
-          <p style={{ color: 'var(--text-secondary)' }}>Loading GitHub profile...</p>
+          <div style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Loading GitHub profile...</div>
         ) : github ? (
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '18px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
             <img
               src={github.avatar_url}
               alt={github.login}
-              style={{ width: '72px', height: '72px', borderRadius: '50%', border: '2px solid var(--accent)', boxShadow: '0 0 20px var(--accent-glow)' }}
+              style={{ width: '76px', height: '76px', borderRadius: '50%', border: '3px solid var(--bg-elevated)', boxShadow: 'var(--shadow)' }}
             />
             <div style={{ flex: 1, minWidth: '200px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{github.name || github.login}</span>
-                <a href={github.html_url} target="_blank" rel="noreferrer" style={{ color: 'var(--text-secondary)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                <span style={{ fontSize: '18px', fontWeight: 700 }}>{github.name || github.login}</span>
+                <a href={github.html_url} target="_blank" rel="noreferrer" style={{ color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center' }}>
                   <ExternalLink size={14} />
                 </a>
               </div>
-              <div style={{ color: 'var(--accent)', fontSize: '14px', marginBottom: '8px' }}>@{github.login}</div>
-              {github.bio && <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '12px' }}>{github.bio}</p>}
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{ color: 'var(--accent)', fontSize: '14px', marginBottom: '10px', fontWeight: 500 }}>@{github.login}</div>
+              {github.bio && <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '14px', lineHeight: 1.5 }}>{github.bio}</p>}
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <div className="stat-pill"><strong>{github.public_repos}</strong> repos</div>
                 <div className="stat-pill"><strong>{github.followers}</strong> followers</div>
                 <div className="stat-pill"><strong>{github.following}</strong> following</div>
@@ -121,9 +133,9 @@ export default function Settings({ profile, user }: { profile: Profile | null; u
             </div>
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)' }}>
-              <Github size={18} /> GitHub not connected
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-secondary)' }}>
+              <Github size={20} /> GitHub not connected
             </div>
             <button className="btn" onClick={() => supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin } })}>
               Connect GitHub

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { Github } from 'lucide-react'
+import { Github, Heart } from 'lucide-react'
 
 export default function Auth({ onAuth: _onAuth }: { onAuth: () => void }) {
   const [loading, setLoading] = useState(false)
@@ -21,22 +21,24 @@ export default function Auth({ onAuth: _onAuth }: { onAuth: () => void }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-dark)' }}>
-      <div className="glass" style={{ maxWidth: '420px', width: '90%', textAlign: 'center' }}>
-        <div style={{ fontSize: '64px', marginBottom: '16px' }}>🥚</div>
-        <h1 style={{ fontSize: '28px', marginBottom: '8px' }}>Welcome to DevPet</h1>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '32px' }}>
-          A digital pet that evolves as you code. Connect your GitHub to begin your journey.
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+      <div className="glass" style={{ maxWidth: '440px', width: '100%', textAlign: 'center', padding: '48px 36px' }}>
+        <div style={{ fontSize: '72px', marginBottom: '20px', animation: 'breathe 4s ease-in-out infinite' }}>🥚</div>
+        <h1 style={{ fontSize: '30px', fontWeight: 700, marginBottom: '10px' }}>Welcome to DevPet</h1>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', lineHeight: 1.6, fontSize: '15px' }}>
+          A digital pet that grows as you code. Connect your GitHub to begin your journey.
         </p>
 
-        <button className="btn" onClick={handleGitHubLogin} disabled={loading} style={{ width: '100%', justifyContent: 'center' }}>
+        <button className="btn" onClick={handleGitHubLogin} disabled={loading} style={{ width: '100%', justifyContent: 'center', padding: '14px' }}>
           <Github size={20} />
           {loading ? 'Connecting...' : 'Continue with GitHub'}
         </button>
 
-        <p style={{ marginTop: '24px', fontSize: '12px', color: 'var(--text-secondary)' }}>
-          We only request read access to your public repos and commit history.
-        </p>
+        <div style={{ marginTop: '28px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <Heart size={12} /> We only request read access to your public repos and commit history.
+          </p>
+        </div>
       </div>
     </div>
   )
