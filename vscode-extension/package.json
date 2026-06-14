@@ -1,0 +1,52 @@
+{
+  "name": "devpet",
+  "displayName": "DevPet — Your Coding Companion",
+  "description": "A digital pet that grows as you code. Tracks habits, celebrates commits, and keeps you motivated.",
+  "version": "1.0.0",
+  "publisher": "devpet",
+  "engines": { "vscode": "^1.74.0" },
+  "categories": ["Other", "Machine Learning", "Visualization"],
+  "keywords": ["pet", "coding", "habits", "gamification", "github"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "devpet.openDashboard", "title": "Open DevPet Dashboard", "icon": "$(heart)" },
+      { "command": "devpet.feedPet", "title": "DevPet: Commit (Feed)" },
+      { "command": "devpet.playWithPet", "title": "DevPet: Debug (Play)" },
+      { "command": "devpet.restPet", "title": "DevPet: Rest" }
+    ],
+    "views": {
+      "explorer": [
+        { "id": "devpet.panel", "name": "DevPet", "when": "devpet.enabled" }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "devpet-sidebar", "title": "DevPet", "icon": "$(heart-filled)" }
+      ]
+    },
+    "configuration": {
+      "title": "DevPet",
+      "properties": {
+        "devpet.supabaseUrl": { "type": "string", "default": "", "description": "Supabase project URL" },
+        "devpet.supabaseAnonKey": { "type": "string", "default": "", "description": "Supabase anon key" },
+        "devpet.petName": { "type": "string", "default": "DevPet", "description": "Your pet's name" },
+        "devpet.showNotifications": { "type": "boolean", "default": true }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "18.x",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

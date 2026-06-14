@@ -1,0 +1,9 @@
+name = "devpet-dashboard"
+compatibility_date = "2024-01-01"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[[env.production.routes]]
+pattern = "devpet.app/*"
+custom_domain = true
